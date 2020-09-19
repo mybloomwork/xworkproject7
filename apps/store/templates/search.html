@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Search | {% endblock %}
+
+{% block content %}
+
+<style>
+    /* Create four equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 25%;
+}
+
+/* On screens that are 992px wide or less, go from four columns to two columns */
+@media screen and (max-width: 992px) {
+  .column {
+    width: 50%;
+  }
+}
+
+/* On screens that are 600px wide or less, make the columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+}
+</style>
+
+
+    <h1 class="title">Search</h1>
+    <h2 class="subtitle">Search term: "{{ query }}"</h2>
+
+    <div class="columns is-multiline">
+        {% for product in products %}
+            <div class="column is-2 is-6-mobile">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image">
+                            <img src="{{ product.thumbnail.url }}">
+                        </figure>
+                    </div>
+
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <p class="title is-4">{{ product.title }}</p>
+                                <p class="subtitle is-6">₦{{ product.price }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <a href="{% url 'product_detail' product.category.slug product.slug %}" class="card-footer-item">View</a>
+                    </footer>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

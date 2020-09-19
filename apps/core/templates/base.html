@@ -1,0 +1,213 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{% block title %}{% endblock %}Online|Shopping</title>
+		<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+		<link rel="stylesheet" href="{% static 'main.css' %}">
+
+	</head>
+
+	<style>
+
+    body {
+        font-family: "Roboto", sans-serif;
+        font-size: 12px;
+        background-color: #faf1f0;
+    }
+
+    .head_text {
+        color: white;
+    }
+
+
+.footer{
+    width: 100vw;
+    display: block;
+    overflow: hidden;
+    padding: 70px 5;
+    box-sizing: border-box;
+    background-color: #03030d
+}
+
+/* Style the header */
+.header {
+  background-color: #4a4a4a;
+  padding: 10px;
+  color: white;
+  text-align: rigth;
+
+}
+
+/* Style the header */
+.navbar {
+  background-color: #0cc2bf;
+  color: white;
+  text-align: rigth;
+
+}
+* {
+  box-sizing: border-box;
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {margin: 0 -5px;}
+
+
+
+
+</style>
+
+	<div class="header">
+	<img src="media\uploads\xpp3.png" width="auto">
+		</div>
+
+	<body>
+		<nav class="navbar is-dark" id="navbarapp">
+			<div class="navbar-brand" href="">
+				<a class="navbar-item" href="{% url 'frontpage' %}">Xperia</a>
+
+				<a @click="toggleMenu()" role="button" class="navbar-burger burger" sans-label="menu" sans-expanded="false" data-target="main-navbar">
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+				</a>
+			</div>
+
+			<div id="main-navbar" class="navbar-menu" :class="{ 'is-active': menuClass }">
+				<div class="navbar-start">
+					<div class="navbar-item">
+						<form method="get" action="{% url 'search' %}">
+							<div class="field has-addons">
+								<div class="control">
+									<input type="text" class="input" placeholder="Search..." name="query">
+								</div>
+								<div class="control">
+									<button class="button is-success">Search</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="navbar-end">
+                    {% for category in menu_categories %}
+                        <a href="{% url 'category_detail' category.slug %}" class="navbar-item">{{ category.title }}</a>
+					{% endfor %}
+
+					<div class="navbar-item">
+						<a href="{% url 'cart' %}" class="button is-primary"><img src="media\uploads\cat9.png" width="48" height="200" alt=>Cart ([[ numItems ]])</a>
+					</div>
+
+					{% if request.user.is_authenticated %}
+							<div class="navbar-item">
+								<a href="{% url 'myaccount' %}" class="button is-light">My account</a>
+							</div>
+					{% else %}
+							<div class="navbar-item">
+									<div class="buttons">
+											<a href="{% url 'signup' %}" class="button is-primary">Sign up</a>
+											<a href="{% url 'login' %}" class="button is-light">Log in</a>
+									</div>
+							</div>
+					{% endif%}
+
+				</div>
+			</div>
+		</nav>
+
+		<section class="section">
+			{% block content %}
+            {% endblock %}
+		</section>
+
+		<footer class="footer">
+			<div class="columns">
+				<div class="column is-2">
+					<a href="{% url 'frontpage' %}" class="subtitle">Go to Store</a>
+					<p>Xperia your number one online store in Nigeria.
+						Finding quality fashion wears for men has never been made so easy online,
+						with Xperia you don’t need to worry about getting value for your money,
+						with our money back guarantee you can trust we would deliver what you order in good time.</p>
+				</div>
+			<div class="columns">
+				<div class="column is-4">
+					<h2 class="subtitle">Dynariel Technologies</h2>
+					<p>Xperia your number one online store in Nigeria.
+						Finding quality fashion wears for men has never been made so easy online,
+						with Xperia you don’t need to worry about getting value for your money,
+						with our money back guarantee you can trust we would deliver what you order in good time.
+						Copyright © 2020</p>
+				</div>
+				<div class="columns">
+					<div class="column is-4">
+					<a href="{% url 'about' %}"  class="subtitle">Powered by Stripe</a>
+					<p>Xperia your number one online store in Nigeria.
+						Finding quality fashion wears for men has never been made so easy online,
+						with Xperia you don’t need to worry about getting value for your money,
+						with our money back guarantee you can trust we would deliver what you order in good time</p>
+				</div>
+				<div class="columns">
+					<div class="column is-8">
+					<a href="{% url 'about' %}"  class="subtitle">About us</a>
+					<p>Xperia your number one online store in Nigeria.
+						Finding quality fashion wears for men has never been made so easy online,
+						with Xperia you don’t need to worry about getting value for your money,
+						with our money back guarantee you can trust we would deliver what you order in good time</p>
+				</div>
+					<div class="columns">
+						<div class="column is-8">
+					<a href="{% url 'contact' %}" class="subtitle">Contact</a>
+					<p>1, Xperia Avenue, Victoria Island, Lagos, Nigeria. Phone: +2348135513397, +2348030690743. www.xperial.com</p>
+				</div>
+			</div>
+		</footer>
+
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://unpkg.com/vuex@3.5.1/dist/vuex.js"></script>
+		<script>
+			var store = new Vuex.Store({
+				state: {
+					numItems: {{ cart.get_total_length }},
+					totalCost: {{ cart.get_total_cost }}
+				},
+				mutations: {
+					increment(state, quantity) {
+						state.numItems += quantity;
+					},
+					changeTotalCost(state, newCost) {
+						state.totalCost += newCost
+					}
+				}
+			});
+
+			var navbarapp = new Vue({
+				el: '#navbarapp',
+				delimiters: ['[[', ']]'],
+				store: store,
+				data () {
+					return {
+						menuClass: false
+					}
+				},
+				computed: {
+					numItems: function() {
+						return store.state.numItems
+					}
+				},
+				methods: {
+					toggleMenu() {
+						console.log('toggleMenu');
+
+						this.menuClass = !this.menuClass;
+					}
+				}
+			});
+		</script>
+
+		{% block scripts %}
+		{% endblock %}
+	</body>
+</html
